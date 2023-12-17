@@ -1,6 +1,7 @@
 <?php
 
-use App\Middleware\TokenMiddleware;
+use App\Config\Middleware\TokenMiddleware;
+use App\Controllers\UserController;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\App;
@@ -38,4 +39,7 @@ return function (App $app) {
         $response->getBody()->write("This is a protected route");
         return $response;
     })->add(new TokenMiddleware());
+
+
+    $app->post('/user', UserController::class . ':registerUser');
 };

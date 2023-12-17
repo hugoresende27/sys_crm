@@ -1,5 +1,5 @@
 <?php
-namespace App\Middleware;
+namespace App\Config\Middleware;
 
 use Slim\App;
 

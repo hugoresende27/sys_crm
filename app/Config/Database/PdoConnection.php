@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Database;
+namespace App\Config\Database;
 
 use PDO;
 use PDOException;
@@ -25,7 +25,7 @@ class PdoConnection
         if (self::$pdoInstance === null) {
             try {
                 $dsn = 'mysql:host=' .$host . ';dbname=' . $dbName . ';port=' . $port . ';charset=utf8mb4';
-                self::$pdoInstance = new PDO($dsn, $user, $pass);
+                self::$pdoInstance = new PDO( $dsn , $user , $pass );
                 self::$pdoInstance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 self::$pdoInstance->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
             } catch (PDOException $e) {
