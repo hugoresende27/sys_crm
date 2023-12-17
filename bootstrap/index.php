@@ -1,52 +1,57 @@
 <?php
 
+use App\Database\PdoConnection;
+use App\Middleware\TokenMiddleware;
 use DI\Container;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use DI\ContainerBuilder;
+use Dotenv\Dotenv;
 use Slim\Factory\AppFactory;
 
 require __DIR__ . '/../vendor/autoload.php';
-require __DIR__ . '/../app/helpers.php';
 
-$container = new Container;
 
-$settings = require __DIR__ . '/../app/settings.php';
-$settings($container);
+//..DOTENV
+$dotenv = Dotenv::createImmutable(__DIR__ . '/..');
+$dotenv->load();
 
+// Set up dependency injection container
+$containerBuilder = new ContainerBuilder();
+$container = $containerBuilder->build();
+$container->set(PDO::class, fn () => PdoConnection::getInstance(
+    $_ENV['DB_HOST'],
+    $_ENV['DB_NAME'],
+    $_ENV['DB_PORT'],
+    $_ENV['DB_USER'],
+    $_ENV['DB_PASS']
+));
+// $container = new Container;
 AppFactory::setContainer($container);
 $app = AppFactory::create();
 
 
-$app = AppFactory::create();
 
+//SETTINGS
+$settings = require __DIR__ . '/../app/settings.php';
+$settings($container);
+
+
+//MIDDLEWARE
 $middleware = require __DIR__ . '/../app/middleware/middleware.php';
 $middleware($app);
-
 $app->addErrorMiddleware(true,true,true);
 
 
-//ROUTES -----------------------------
-$app->get('/dev', function (Request $request, Response $response, $args) {
-    if (extension_loaded('sodium')) {
-        echo 'Libsodium is installed.';
-    } else {
-        echo 'Libsodium is not installed.';
-    };
-    die();
-    $response->getBody()->write(json_encode($r ?? ""));
-    return $response;
-});
-$app->get('/', function (Request $request, Response $response, $args) {
-    $response->getBody()->write("Hello world!");
-    return $response;
-});
+//ROUTES
+$routes = require __DIR__ . '/../app/routes/routes.php';
+$routes($app);
 
 
-require __DIR__ . '/../app/middleware/TokenMiddleware.php';
-$app->get('/login', function ($request, $response) {
-    $response->getBody()->write("This is a protected route");
-    return $response;
-})->add(new TokenMiddleware());
+// 
+// $containerBuilder = new ContainerBuilder();
+// $container = $containerBuilder->build();
+
+// Register PDO connection in the container
+
 
 
 $app->run();

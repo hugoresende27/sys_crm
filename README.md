@@ -2,4 +2,5 @@
 - [link](https://www.youtube.com/watch?v=3Hg2WPwDyG8&ab_channel=ZakH.)
 
 #### TODO's
-- add namespace
+- configure sql
+- create users table (id,name,token,email,birthdate,mobile,active)
