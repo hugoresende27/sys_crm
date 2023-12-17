@@ -18,6 +18,9 @@ $app = AppFactory::create();
 
 $app = AppFactory::create();
 
+$middleware = require __DIR__ . '/../app/middleware.php';
+$middleware($app);
+
 $app->addErrorMiddleware(true,true,true);
 
 $app->get('/', function (Request $request, Response $response, $args) {

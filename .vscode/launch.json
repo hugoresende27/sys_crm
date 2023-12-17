@@ -1,19 +1,18 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-      {
-        "name": "Sys CRM PHP Server",
-        "type": "php",
-        "request": "launch",
-        "runtimeArgs": ["-S", "localhost:8085"],
-        "program": "${workspaceFolder}/public/index.php",
-        "cwd": "${workspaceFolder}/public",
-        "port": 8087,
-        "serverReadyAction": {
-          "action": "openExternally",
-          "pattern": "\\bDevelopment Server \\(http://localhost:8085\\) started\\b",
-          "uriFormat": "http://localhost:8085"
-        }
-      }
-    ],
+  "configurations": [
+  {
+    "name": "Sys_Crm PHP Server",
+    "type": "php",
+    "request": "launch",
+    "runtimeArgs": ["-S", "localhost:8085"],
+    "program": "${workspaceFolder}/public/index.php",
+    "cwd": "${workspaceFolder}/public",
+    "port": 8087,
+    "serverReadyAction": {
+      "action": "openExternally",
+      "pattern": "\\bDevelopment Server \\(http://localhost:8085\\) started\\b",
+      "uriFormat": "http://localhost:8085"
+    }
   }
+  ]
+}
