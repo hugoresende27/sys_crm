@@ -8,11 +8,6 @@
     "program": "${workspaceFolder}/public/index.php",
     "cwd": "${workspaceFolder}/public",
     "port": 8087,
-    "serverReadyAction": {
-      "action": "openExternally",
-      "pattern": "\\bDevelopment Server \\(http://localhost:8085\\) started\\b",
-      "uriFormat": "http://localhost:8085"
-    }
   }
   ]
 }
