@@ -1,6 +1,7 @@
 <?php
 
 use App\Config\Middleware\TokenMiddleware;
+use App\Controllers\SystemController;
 use App\Controllers\UserController;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -8,27 +9,7 @@ use Slim\App;
 
 return function (App $app) {
 
-    $app->get('/dev', function (Request $request, Response $response, $args) {
-
-            // Get PDO instance from the container
-        $pdo = $this->get(PDO::class);
-        // dd('pdo',$pdo);
-        // Example query
-        $stmt = $pdo->prepare('SELECT * FROM users');
-        $stmt->execute();
-        $data = $stmt->fetchAll();
-        dd($data);
-
-        dd($_ENV['APP_LOCAL']);
-        if (extension_loaded('sodium')) {
-            echo 'Libsodium is installed.';
-        } else {
-            echo 'Libsodium is not installed.';
-        };
-        die();
-        $response->getBody()->write(json_encode($r ?? ""));
-        return $response;
-    });
+    $app->get('/dev', SystemController::class . ':dev');
 
     $app->get('/', function (Request $request, Response $response, $args) {
         $response->getBody()->write("Hello world!");
@@ -42,4 +23,6 @@ return function (App $app) {
 
 
     $app->post('/user', UserController::class . ':registerUser');
+
+    $app->post('/table', SystemController::class . ':addSQLTableIfNotExist');
 };
