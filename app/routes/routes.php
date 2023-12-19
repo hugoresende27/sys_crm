@@ -6,23 +6,30 @@ use App\Controllers\UserController;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\App;
+use Slim\Routing\RouteCollectorProxy;
 
-return function (App $app) {
+$tokenMiddleware = new TokenMiddleware();
+
+return function (App $app) use ($tokenMiddleware) {
 
     $app->get('/dev', SystemController::class . ':dev');
 
     $app->get('/', function (Request $request, Response $response, $args) {
-        $response->getBody()->write("Hello world!");
+        $response->getBody()->write("Hello System CRM");
         return $response;
     });
 
-    $app->get('/login', function ($request, $response) {
-        $response->getBody()->write("This is a protected route");
-        return $response;
-    })->add(new TokenMiddleware());
+    $app->group('/api/v1', function (RouteCollectorProxy $routes) use ($tokenMiddleware) {
+        $routes->post('/login', UserController::class . ':loginUser');
+        $routes->post('/register-dev', UserController::class . ':registerUser');
+        $routes->group('/user', function (RouteCollectorProxy $group) {
+            $group->post('/register', UserController::class . ':registerUser');
+            $group->put('/{id}', UserController::class . ':editUser');
+            $group->delete('/{id}', UserController::class . ':deleteUser');
+            $group->get('/users', UserController::class . ':getUsers');
+        })->add($tokenMiddleware);
 
+        $routes->post('/table', SystemController::class . ':addSQLTableIfNotExist')->add($tokenMiddleware);
+    });
 
-    $app->post('/user', UserController::class . ':registerUser');
-
-    $app->post('/table', SystemController::class . ':addSQLTableIfNotExist');
 };
