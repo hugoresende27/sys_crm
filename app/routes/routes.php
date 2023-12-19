@@ -22,6 +22,7 @@ return function (App $app) use ($tokenMiddleware) {
     $app->group('/api/v1', function (RouteCollectorProxy $routes) use ($tokenMiddleware) {
         $routes->post('/login', UserController::class . ':loginUser');
         $routes->post('/register-dev', UserController::class . ':registerUser');
+        
         $routes->group('/user', function (RouteCollectorProxy $group) {
             $group->post('/register', UserController::class . ':registerUser');
             $group->put('/{id}', UserController::class . ':editUser');

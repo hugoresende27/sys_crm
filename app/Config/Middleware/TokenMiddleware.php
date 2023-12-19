@@ -13,22 +13,36 @@ class TokenMiddleware
     {
         $token = $request->getHeaderLine('Authorization');
         
-        if (empty($token) || !$this->isValidToken($token)) {
+        if (empty($token)) {
             $response = new Response(401);
             $response->getBody()->write('Unauthorized');
             return $response;
         }
+        $isValidToken = $this->isValidToken($token);
+        if(isset($isValidToken['status'])) {
+            if ($isValidToken['status']) {
+                return $handler->handle($request);
+            }
+        }
+        $response = new Response(400);
+        $response->getBody()->write(json_encode($isValidToken));
+        return $response;
 
-        return $handler->handle($request);
+
     }
 
     public function isValidToken(string $token): array
     {
+       
         try {
             $decodedToken = JWT::decode($token, new Key($_ENV['APP_KEY'], 'HS256'));
+      
+            if (!isset($decodedToken->expiration_date)) {
+                return ['status' => false, 'error' => 'token invalid'];
+            }
             $expirationDate = new DateTimeImmutable($decodedToken->expiration_date->date);
             $currentDateTime = new DateTimeImmutable();
-
+            // dd($currentDateTime , $expirationDate);
             return ($currentDateTime > $expirationDate)
                 ? ['status' => false, 'error' => 'token expired']
                 : ['status' => true];
