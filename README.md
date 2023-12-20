@@ -3,4 +3,7 @@
 
 #### TODO's
 - regen token on expire
-- 
+
+
+
+### Frontend inside frontend/app_crm (Vue)
