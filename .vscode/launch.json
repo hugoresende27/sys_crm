@@ -1,13 +1,19 @@
 {
   "configurations": [
-  {
-    "name": "Sys_Crm PHP Server",
-    "type": "php",
-    "request": "launch",
-    "runtimeArgs": ["-S", "localhost:8085"],
-    "program": "${workspaceFolder}/public/index.php",
-    "cwd": "${workspaceFolder}/public",
-    "port": 8087,
-  }
+    {
+      "name": "Sys_Crm PHP Server",
+      "type": "php",
+      "request": "launch",
+      "runtimeArgs": ["-S", "localhost:8085"],
+      "program": "${workspaceFolder}/public/index.php",
+      "cwd": "${workspaceFolder}/public",
+      "port": 8087,
+    },
+    {
+      "name": "Sys_Crm Vue Server",
+      "command": "cd frontend/app_crm && npm run dev",
+      "request": "launch",
+      "type": "node-terminal",
+    }
   ]
 }

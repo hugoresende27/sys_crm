@@ -3,6 +3,7 @@ vendor
 
 
 # frontend
+frontend/app_crm/.env
 frontend/app_crm/node_modules
 frontend/app_crm/logs
 frontend/app_crm/*.log

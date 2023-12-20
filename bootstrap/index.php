@@ -4,6 +4,7 @@ use App\Config\Database\PdoConnection;
 use DI\ContainerBuilder;
 use Dotenv\Dotenv;
 use Slim\Factory\AppFactory;
+use Tuupola\Middleware\CorsMiddleware;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -30,7 +31,7 @@ $container = $containerBuilder->build();
 AppFactory::setContainer($container);
 $app = AppFactory::create();
 
-
+$app->add(new CorsMiddleware());
 
 //SETTINGS
 $settings = require __DIR__ . '/../app/settings.php';

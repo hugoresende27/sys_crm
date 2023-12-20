@@ -1,6 +1,6 @@
 <template>
   <main>
-    <form @submit.prevent="login">
+    <form class="login-form" @submit.prevent="login">
       <label for="username">Username:</label>
       <input type="text" v-model="username" id="username" required />
 
@@ -9,9 +9,10 @@
 
       <button type="submit">Login</button>
     </form>
+
+  
   </main>
 </template>
-
 
 <style scoped>
 .main {
@@ -56,19 +57,8 @@ button:hover {
 }
 </style>
 
-
 <script setup lang="ts">
-import { ref } from 'vue';
+import { username, password, login, initializeLoginView } from '@/utils/login';
 
-const username = ref('');
-const password = ref('');
-
-const login = () => {
-  // Handle login logic here
-  console.log('Username:', username.value);
-  console.log('Password:', password.value);
-
-  // You can make an API call for authentication or perform any other necessary logic
-  // For simplicity, we'll just log the values to the console in this example
-};
+initializeLoginView();
 </script>
