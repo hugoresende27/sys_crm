@@ -6,4 +6,4 @@
 
 
 
-### Frontend inside frontend/app_crm (Vue)
+### Frontend inside frontend/index.html
