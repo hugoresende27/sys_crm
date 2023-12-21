@@ -33,7 +33,7 @@ class UserController
 
         //verify if name or email exist
         if ($this->userRepository->userNameAndEmailExist($v->data()['name'], $v->data()['email'])){
-            $response->getBody()->write('ERROR :: user with name '.$v->data()['name'].' and email '.$v->data()['email'].'exists');
+            $response->getBody()->write('ERROR :: user with name '.$v->data()['name'].' and email '.$v->data()['email'].' exists');
             return $response;
         }
         
@@ -62,12 +62,13 @@ class UserController
                 $response->getBody()->write('Login with sucess -- TOKEN::'.json_encode($loginUser['user']['token']));
             } else {
                 $response->getBody()->write('Wrong credentials');
+                $response = $response->withStatus(401);
             }
          
         } else {
             $response->getBody()->write(json_encode($v->errors()));
+            $response = $response->withStatus(400);
         }
-
         return $response;
 
     }

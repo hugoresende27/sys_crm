@@ -1,10 +1,15 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+// import { RouterLink, RouterView } from 'vue-router'
 import Welcome from './components/Welcome.vue'
+
+import { responseStatus } from '@/utils/login';
+
 </script>
 
 <template>
-  <header>
+
+
+  <header v-if="responseStatus != 200">
     <img alt="crm logo" class="logo" src="@/assets/h.png" width="125" height="125" />
 
     <div class="wrapper">

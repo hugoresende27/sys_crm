@@ -44,7 +44,7 @@ class UserRepository
         $stmt->execute();
 
         $lastInsertedId = $this->pdo->lastInsertId();
-        $username = $name.'-'.substr($birthDate,2,2).$lastInsertedId;
+        $username = $name.substr($birthDate,2,2).$lastInsertedId;
         $data['username'] = $username;
         $token = $this->tokenMiddleware->generateToken($data);
         $updateStmt = $this->pdo->prepare('UPDATE ' . self::TABLE_NAME . 
@@ -69,6 +69,11 @@ class UserRepository
 
         if ($user && password_verify($password, $user['password'])) {
             $verifyToken = $this->tokenMiddleware->isValidToken($user['token']);
+            if(!$verifyToken['status']){
+                $newToken = $this->tokenMiddleware->generateToken($user);
+                $user['token'] = $newToken;
+                $this->updateUserToken($user['id'], $user);
+            }
             return ['success' => true, 'message' => 'Login successful', 'user' => $user, 'token' => $verifyToken];
         } else {
             return ['success' => false, 'message' => 'Invalid credentials'];
@@ -104,7 +109,7 @@ class UserRepository
 
     }
 
-    public function updateUser(int $userId, array $data): void
+    public function updateUser(int $userId, array $data): bool
     {
         $name = $data['name'] ?? null;
         $email = $data['email'] ?? null;
@@ -120,9 +125,8 @@ class UserRepository
         if ($phone !== null) {
             $updateFields[] = 'phone = :phone';
         }
-
         if (empty($updateFields)) {
-            return;
+            return false;
         }
 
         $updateFields[] = 'updated_at = :updated_at';
@@ -140,7 +144,34 @@ class UserRepository
             $stmt->bindParam(':phone', $phone);
         }        
         $stmt->bindParam(':updated_at', $this->nowTime);
-        $stmt->execute();
+        return $stmt->execute();
+
+    }
+    public function updateUserToken(int $userId, array $data): bool
+    {
+        $token = $data['token'] ?? null;
+
+        $updateFields = [];
+        if ($token !== null) {
+            $updateFields[] = 'token = :token';
+        }
+
+        if (empty($updateFields)) {
+            return false;
+        }
+
+        $updateFields[] = 'updated_at = :updated_at';
+
+        $sql = 'UPDATE ' . self::TABLE_NAME . ' SET ' . implode(', ', $updateFields) . ' WHERE id = :id';
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':id', $userId);
+        if ($token !== null) {
+            $stmt->bindParam(':token', $token);
+        }
+            
+        $stmt->bindParam(':updated_at', $this->nowTime);
+        return $stmt->execute();
+
     }
 
     public function deleteUser(int $userId): bool

@@ -9,12 +9,23 @@
 
       <button type="submit">Login</button>
     </form>
+    
+    <p v-if="responseStatus == 401" class="error-message">Wrong Credentials</p>
+
 
   
   </main>
 </template>
 
 <style scoped>
+
+.error-message {
+    color: red;
+    font-weight: bolder;
+    margin-top: 10px;
+    text-align: center;
+  }
+
 .main {
   display: flex;
   align-items: center;
@@ -58,7 +69,9 @@ button:hover {
 </style>
 
 <script setup lang="ts">
-import { username, password, login, initializeLoginView } from '@/utils/login';
+import { username, password, login, initializeLoginView, responseStatus } from '@/utils/login';
+console.log(responseStatus)
+
 
 initializeLoginView();
 </script>

@@ -31,7 +31,14 @@ $container = $containerBuilder->build();
 AppFactory::setContainer($container);
 $app = AppFactory::create();
 
-$app->add(new CorsMiddleware());
+
+$app->add(new CorsMiddleware([
+    'origin' => ['*'],
+    'methods' => ['GET', 'POST', 'PUT', 'DELETE'],
+    'headers.allow' => ['Content-Type', 'Authorization'],
+    'credentials' => true,
+]));
+
 
 //SETTINGS
 $settings = require __DIR__ . '/../app/settings.php';

@@ -1,63 +1,48 @@
-import { ref, onMounted } from 'vue';
+
+import { ref, onMounted, watch } from 'vue';
 import axios from 'axios';
 const username = ref('');
 const password = ref('');
+const responseStatus = ref(0);
+
 
 const login = async () => {
-    try {
-      const response = await axios.post('http://localhost:8085/api/v1/login', {
-        username: username.value,
-        password: password.value,
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin' : '*'
-        },
-      });
 
-      // const axios = require('axios');
-      // let data = JSON.stringify({
-      //   "username": "hug-3220",
-      //   "password": "123456"
-      // });
+  try {
+    const response = await axios.post(`${import.meta.env.VITE_API_HOST}/login`, {
+      username: username.value,
+      password: password.value,
+    });
 
-      // let config = {
-      //   method: 'post',
-      //   maxBodyLength: Infinity,
-      //   url: 'http://localhost:8085/api/v1/login',
-      //   headers: { 
-      //     'Content-Type': 'application/json',
-      //     'Access-Control-Allow-Origin' : '*'
-      //   },
-      //   data : data
-      // };
+    
+    if (response.status === 200) {
+     
+      window.location.href = '/dashboard';
 
-      // axios.request(config)
-      // .then((response) => {
-      //   console.log(JSON.stringify(response.data));
-      // })
-      // .catch((error) => {
-      //   console.log(error);
-      // });
+    } 
+    responseStatus.value = 200;
+  } catch (error) {
+    responseStatus.value = 401;
+    console.error('Error:', error, responseStatus);
+  }
 
-  
-      // Handle the response
-      console.log('Response:', response.data);
-  
-      // You might want to redirect or perform other actions based on the response
-    } catch (error) {
-      // Handle errors
-      console.error('Error:', error.message);
-    }
-  };
-  
+    
+};
+
 
 const initializeLoginView = () => {
   onMounted(() => {
-    console.log(import.meta.env.VITE_API_HOST);
+    // console.log(import.meta.env.VITE_API_HOST);
   });
+
+  watch(responseStatus, (newValue) => {
+    // console.log('Response Status Updated:', newValue);
+    // Additional UI updates or actions based on newValue
+  });
+
+  
 };
 
 
 
-export { username, password, login, initializeLoginView };
+export { username, password, login, initializeLoginView, responseStatus};
