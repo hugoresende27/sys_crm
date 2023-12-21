@@ -3,34 +3,34 @@ vendor
 
 
 # frontend
-frontend/app_crm/.env
-frontend/app_crm/node_modules
-frontend/app_crm/logs
-frontend/app_crm/*.log
-frontend/app_crm/npm-debug.log*
-frontend/app_crm/yarn-debug.log*
-frontend/app_crm/yarn-error.log*
-frontend/app_crm/pnpm-debug.log*
-frontend/app_crm/lerna-debug.log*
+frontend/.env
+frontend/node_modules
+frontend/logs
+frontend/*.log
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*
+frontend/lerna-debug.log*
 
-frontend/app_crm/node_modules
-frontend/app_crm/.DS_Store
-frontend/app_crm/dist
-frontend/app_crm/dist-ssr
-frontend/app_crm/coverage
-frontend/app_crm/*.local
+frontend/node_modules
+frontend/.DS_Store
+frontend/dist
+frontend/dist-ssr
+frontend/coverage
+frontend/*.local
 
-frontend/app_crm/cypress/videos/
-frontend/app_crm/cypress/screenshots/
+frontend/cypress/videos/
+frontend/cypress/screenshots/
 
 # Editor directories and files
-frontend/app_crm/.vscode/*
-frontend/app_crm/!.vscode/extensions.json
-frontend/app_crm/.idea
-frontend/app_crm/*.suo
-frontend/app_crm/*.ntvs*
-frontend/app_crm/*.njsproj
-frontend/app_crm/*.sln
-frontend/app_crm/*.sw?
+frontend/.vscode/*
+frontend/!.vscode/extensions.json
+frontend/.idea
+frontend/*.suo
+frontend/*.ntvs*
+frontend/*.njsproj
+frontend/*.sln
+frontend/*.sw?
 
-frontend/app_crm/*.tsbuildinfo
+frontend/*.tsbuildinfo

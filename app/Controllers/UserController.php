@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Config\JsonResponse;
 use App\Repositories\UserRepository;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -59,18 +60,18 @@ class UserController
         if ($v->validate()){
             $loginUser = $this->userRepository->loginUser($v->data()['username'], $v->data()['password']);
             if(isset($loginUser['token']) && $loginUser['token'] == true){
-                $response->getBody()->write('Login with sucess -- TOKEN::'.json_encode($loginUser['user']['token']));
+                $data['token'] = $loginUser['user']['token'];
+                return JsonResponse::withJson($response, $data);
             } else {
-                $response->getBody()->write('Wrong credentials');
-                $response = $response->withStatus(401);
+                $data = 'Wrong credentials';
+                return JsonResponse::withJson($response, $data, 401);
             }
          
         } else {
-            $response->getBody()->write(json_encode($v->errors()));
-            $response = $response->withStatus(400);
+            $data = json_encode($v->errors());
+            return JsonResponse::withErrorJson($response, $data);
         }
-        return $response;
-
+  
     }
 
     /**

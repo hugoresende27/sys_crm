@@ -30,7 +30,7 @@ return function (App $app) use ($tokenMiddleware) {
             $group->get('/users', UserController::class . ':getUsers');
         })->add($tokenMiddleware);
 
-        $routes->post('/table', SystemController::class . ':addSQLTableIfNotExist')->add($tokenMiddleware);
+        $routes->post('/table', SystemController::class . ':addSQLTableIfNotExist');
     });
 
 };

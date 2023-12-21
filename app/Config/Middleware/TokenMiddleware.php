@@ -36,7 +36,7 @@ class TokenMiddleware
        
         try {
             $decodedToken = JWT::decode($token, new Key($_ENV['APP_KEY'], 'HS256'));
-      
+            // dd($decodedToken);
             if (!isset($decodedToken->expiration_date)) {
                 return ['status' => false, 'error' => 'token invalid'];
             }
@@ -53,6 +53,7 @@ class TokenMiddleware
     
     public function generateToken(array $data): string
     {
+        unset($data['token']);
         $payload = [
             'iss' => $_ENV['APP_HOST'],
             'aud' => $_ENV['APP_NAME'],
