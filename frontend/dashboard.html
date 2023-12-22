@@ -8,13 +8,9 @@
     <title>System CRM</title>
  
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
-    <!-- https://fonts.google.com/specimen/Open+Sans -->
     <link rel="stylesheet" href="css/fontawesome.min.css">
-    <!-- https://fontawesome.com/ -->
     <link rel="stylesheet" href="css/fullcalendar.min.css">
-    <!-- https://fullcalendar.io/ -->
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <!-- https://getbootstrap.com/ -->
     <script src="https://unpkg.com/vue@3.0.2"></script>
 </head>
 
@@ -39,46 +35,30 @@
                             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                                 <ul class="navbar-nav mx-auto">
                                     <li class="nav-item">
-                                        <a class="nav-link active" href="#" @click="getUsers">Users
-                                            <span class="sr-only">(current)</span>
-                                        </a>
+                                        <p class="nav-link my-btn" :class="{ active: usersPage }" @click="getUsers">Users</p>
                                     </li>
-                                    <li class="nav-item dropdown">
-                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
-                                            aria-expanded="false">
-                                            Reports
-                                        </a>
-                                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                            <a class="dropdown-item" href="#">Daily Report</a>
-                                            <a class="dropdown-item" href="#">Weekly Report</a>
-                                            <a class="dropdown-item" href="#">Yearly Report</a>
-                                        </div>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="">Products</a>
-                                    </li>
+                          
 
                                     <li class="nav-item">
-                                        <a class="nav-link" href="">Accounts</a>
+                                        <p class="nav-link my-btn" :class="{ active: tokenPage }" @click="getToken">Token</p>
                                     </li>
                                     <li class="nav-item dropdown">
-                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
+                                        <p class="nav-link dropdown-toggle my-btn" @click="getSettings" :class="{ active: settingsPage }" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
                                             aria-expanded="false">
                                             Settings
-                                        </a>
+                                        </p>
                                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                             <a class="dropdown-item" href="#">Profile</a>
-                                            <a class="dropdown-item" href="#">Billing</a>
                                             <a class="dropdown-item" href="#">Customize</a>
                                         </div>
                                     </li>
                                 </ul>
                                 <ul class="navbar-nav">
                                     <li class="nav-item">
-                                        <a class="nav-link d-flex" @click="logout">
+                                        <p class="nav-link d-flex my-btn bg-danger" style="color:white;border-radius:10px" @click="logout">
                                             <i class="far fa-user mr-2 tm-logout-icon"></i>
                                             <span>Logout</span>
-                                        </a>
+                                        </p>
                                     </li>
                                 </ul>
                             </div>
@@ -87,29 +67,48 @@
                 </div>
                 <!-- row -->
 
-                <div id="content-container"></div>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Username</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                     
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="user in usersData" :key="user.id">
-                            <td>{{ user.id }}</td>
-                            <td>{{ user.name }}</td>
-                            <td>{{ user.username }}</td>
-                            <td>{{ user.email }}</td>
-                            <td>{{ user.phone }}</td>
-                      
-                        </tr>
-                    </tbody>
-                </table>
+              
+                <div class="" v-if="usersPage">
+                    <button class="btn btn-success float-right" @click="">Add User</button>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                        
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="user in usersData" :key="user.id">
+                                <td>{{ user.id }}</td>
+                                <td>{{ user.name }}</td>
+                                <td>{{ user.username }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.phone }}</td>
+                        
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+
+                <div class="" style="word-wrap: break-word;" v-if="tokenPage">
+
+
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <b>Username : </b>{{ this.username }}
+                        </div>
+                        <div class="card-body">
+                            <b>Token : </b>{{ this.token }}
+                        </div>
+                    </div>
+
+
+                </div>
                 <footer class="row tm-mt-small">
                     <div class="col-12 font-weight-light">
                         <p class="d-inline-block tm-bg-black text-white py-2 px-4">
@@ -125,21 +124,24 @@
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
     <script>
  
-      const app = Vue.createApp({
+        const app = Vue.createApp({
+
+            
   
         data(){
             return{
                 usersData: '',
                 token: '',
-                username: ''
+                username: '',
+                usersPage: false,
+                tokenPage: false,
+                settingsPage: false,
             }
         },
         methods: {
             async getUsers() {
 
-                this.username = Cookies.get(`username`);
-                this.token = Cookies.get(`token_${this.username}`);
-
+                console.log(this.token);
                 let config = {
                     method: 'get',
                     maxBodyLength: Infinity,
@@ -153,19 +155,39 @@
                 const response = await axios.request(config);
                 this.usersData = response.data; 
                 // this.users = JSON.stringify(response.data);
-                // console.log(this.users, response);
+                if(response.status == 400) {
+                    window.location.href = 'index.html';
+                }
+                this.usersPage = true;
+                this.tokenPage = false;
+                this.settingsPage = false;
+            },
+
+            async getToken() {
+
+                this.usersPage = false;
+                this.tokenPage = true;
+                this.settingsPage = false;
+            },
+            async getSettings() {
+ 
+                this.usersPage = false;
+                this.tokenPage = false;
+                this.settingsPage = true;
             },
 
             logout() {
                 Cookies.remove(`token_${this.username}`);
                 Cookies.remove('username');
                 window.location.href = 'index.html';
-            }
+            },
+            
         },
 
 
         created() {
-     
+            this.username = Cookies.get(`username`);
+            this.token = Cookies.get(`token_${this.username}`);
             },
         computed: {
         }
@@ -186,3 +208,10 @@
 
 </body>
 </html>
+
+<style>
+
+    .my-btn{
+        cursor: pointer;
+    }
+</style>
