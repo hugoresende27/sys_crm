@@ -7,6 +7,7 @@ const app = Vue.createApp({
             username: '',
             pass: '',
             error: null, 
+            user_id: ''
         }
     },
     methods: {
@@ -16,10 +17,38 @@ const app = Vue.createApp({
                   username: this.username,
                   password: this.pass,
                 });
-                console.log(response.status);
+           
+  
                 if (response.status == 200) {
-                  document.cookie = `token_${this.username}=${response.data.token}; path=/`;       
-                  document.cookie = `username=${this.username}; path=/`;        
+            
+                    Cookies.set(`token_${this.username}`, response.data.token, {
+                      expires: new Date(response.data.expires_at),
+                      path: '/',
+                    });
+          
+                
+                    Cookies.set(`username`, this.username, {
+                      expires: new Date(response.data.expires_at),
+                      path: '/',
+                    });
+          
+                   
+                    Cookies.set(`user_id`, response.data.user_id, {
+                      expires: new Date(response.data.expires_at),
+                      path: '/',
+                    });
+          
+       
+                    Cookies.set(`token_created_${this.username}`, response.data.created_at, {
+                      expires: new Date(response.data.expires_at),
+                      path: '/',
+                    });
+                   
+                    Cookies.set(`token_expires_${this.username}`, response.data.created_at, {
+                      expires: new Date(response.data.expires_at),
+                      path: '/',
+                    });
+          
                   window.location.href = 'dashboard.html';
                 } 
               } catch (error) {

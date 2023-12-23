@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Config\JsonResponse;
 use App\Repositories\UserRepository;
+use DateTime;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -58,8 +59,12 @@ class UserController
         $v->rule('required', ['username', 'password']);
 
         if ($v->validate()){
+            $time = (new DateTime('now'));
             $loginUser = $this->userRepository->loginUser($v->data()['username'], $v->data()['password']);
             if(isset($loginUser['token']) && $loginUser['token'] == true){
+                $data['user_id'] =  $loginUser['user']['id'];
+                $data['created_at'] =  $time->format('Y-m-d H:i:s');
+                $data['expires_at'] =  $time->modify('+1 hour')->format('Y-m-d H:i:s');
                 $data['token'] = $loginUser['user']['token'];
                 return JsonResponse::withJson($response, $data);
             } else {
@@ -114,10 +119,10 @@ class UserController
         $v->rule('min', 'password', 6); 
         $v->rule('dateFormat', 'birth_date', 'Y-m-d');
 
-        $this->userRepository->updateUser($userId, $userData);
+        $updatedFields = $this->userRepository->updateUser($userId, $userData);
 
         $response->getBody()->write('User updated successfully');
-        return $response;
+        return JsonResponse::withJson($response, $updatedFields);
     }
 
 

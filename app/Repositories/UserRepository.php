@@ -60,7 +60,7 @@ class UserRepository
 
     public function loginUser(string $username, string $password): array
     {
-        $stmt = $this->pdo->prepare('SELECT id, password, username, token FROM ' . 
+        $stmt = $this->pdo->prepare('SELECT id, password, username, token, updated_at FROM ' . 
             self::TABLE_NAME . ' WHERE username = :username AND active = true');
         $stmt->bindParam(':username', $username);
         $stmt->execute();
@@ -98,8 +98,9 @@ class UserRepository
         $r = $stmt->fetch(PDO::FETCH_ASSOC);
         return is_array($r);
     }
-    public function getUserById(int $id): bool | array
+    public function getUserById($id): bool | array
     {
+        $id = (int)$id;
         $stmt = $this->pdo->prepare('SELECT * FROM ' . self::TABLE_NAME
             .' WHERE  id = :id');   
     
@@ -109,21 +110,29 @@ class UserRepository
 
     }
 
-    public function updateUser(int $userId, array $data): bool
+    public function updateUser(int $userId, array $data): array
     {
         $name = $data['name'] ?? null;
         $email = $data['email'] ?? null;
         $phone = $data['phone'] ?? null;
+        $birthDate = $data['birth_date'] ?? null;
+        $username = $name.substr($birthDate,2,2).$userId;
+        $data['username'] = $username;
 
         $updateFields = [];
-        if ($name !== null) {
+        if ($name !== null) {                  
             $updateFields[] = 'name = :name';
+            $updateFields[] = 'username = :username';
         }
         if ($email !== null) {
             $updateFields[] = 'email = :email';
         }
         if ($phone !== null) {
             $updateFields[] = 'phone = :phone';
+        
+        }
+        if ($birthDate !== null) {
+            $updateFields[] = 'birth_date = :birth_date';
         }
         if (empty($updateFields)) {
             return false;
@@ -143,8 +152,15 @@ class UserRepository
         if ($phone !== null) {
             $stmt->bindParam(':phone', $phone);
         }        
+        if ($birthDate !== null) {
+            $stmt->bindParam(':birth_date', $birthDate);
+        }        
+        if ($username !== null) {
+            $stmt->bindParam(':username', $username);
+        }        
         $stmt->bindParam(':updated_at', $this->nowTime);
-        return $stmt->execute();
+        $stmt->execute();
+        return $data;
 
     }
     public function updateUserToken(int $userId, array $data): bool

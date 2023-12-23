@@ -34,17 +34,27 @@
 
                       Your browser does not support the video tag.
                   </video>
-              </div>
+                </div>
               </div>
           </div>
       
     </div>
-    
+
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
       async function loadContent() {
           const contentContainer = document.getElementById('content-container');
 
+          if (document.cookie.includes('username')) {
+                let username = Cookies.get(`username`);
+                
+                if (document.cookie.includes('token_'+username)) {
+                    window.location.href = 'dashboard.html';
+                    return; 
+                }
+               
+            }
           try {
               const response = await axios.get('login-form.html');
               contentContainer.innerHTML = response.data;
@@ -71,13 +81,7 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <style>
-.bg-image-vertical {
-    position: relative;
-    overflow: hidden;
-    background-repeat: no-repeat;
-    background-position: right center;
-    background-size: auto 100%;
-    }
+
 
     @media (min-width: 1025px) {
     .h-custom-2 {
