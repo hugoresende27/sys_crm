@@ -1,0 +1,85 @@
+<?php
+
+namespace App\webServices;
+use Exception;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Psr7\Request;
+
+class TheMovieDbAPI
+{
+    private string $token;
+    private string $imageURL;
+    private string $apiURL;
+    public function __construct()
+    {
+        $this->token = $_ENV['MOVIE_API_TOKEN'];
+        $this->imageURL = 'https://image.tmdb.org/t/p/';
+        $this->apiURL = 'https://api.themoviedb.org/3';
+    }
+
+    public function trendings(): array
+    {
+        try{
+            $client = new Client();
+            $headers = [
+                'Authorization' => 'Bearer '.$this->token
+            ];
+            $request = new Request('GET', $this->apiURL.'/trending/movie/day?language=pt-PT', $headers);
+            $response = $client->send($request);
+            $body = $response->getBody()->getContents();
+            $data = json_decode($body, true);
+            foreach($data['results'] as $key => $movie) {
+                $data['results'][$key]['backdrop_path'] = $this->generateImageURL($this->imageURL, $movie['backdrop_path']);
+                $data['results'][$key]['poster_path'] = $this->generateImageURL($this->imageURL, $movie['poster_path']);   
+                $genres = $this->getGenreNames($movie['genre_ids'] );
+                $data['results'][$key]['genre_ids'] = $genres;
+            }
+
+            
+        } catch (Exception $e) {
+            // dd($e);
+            $data = (array) $e;
+        }
+
+        return $data;
+     
+    }
+
+    public function getGenreNames($genreIds) : array
+    {
+        try {
+            $client = new Client();
+            $headers = [
+                'Authorization' => 'Bearer ' . $this->token,
+            ];
+    
+            $genreIdsString = implode(',', $genreIds);
+            $request = new Request('GET', $this->apiURL."/genre/movie/list?language=pt-PT", $headers);
+    
+            $response = $client->send($request);
+
+            $body = $response->getBody()->getContents();
+            $data = json_decode($body, true);
+            $genreMap = [];
+            foreach ($data['genres'] as $genre) {
+                $genreMap[$genre['id']] = $genre['name'];
+            }
+            $genreNames = [];
+            foreach ($genreIds as $genreId) {
+                if (isset($genreMap[$genreId])) {
+                    $genreNames[] = $genreMap[$genreId];
+                }
+            }
+    
+            return $genreNames;
+        } catch (RequestException $e) {
+            echo 'Error: ' . $e->getMessage();
+            return (array) $e;
+        }
+    }
+
+    function generateImageURL($baseURL, $filePath, $size = 'w500') {
+        return $baseURL . $size . $filePath;
+    }
+}

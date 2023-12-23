@@ -1,6 +1,7 @@
 <?php
 
 use App\Config\Middleware\TokenMiddleware;
+use App\Controllers\MovieController;
 use App\Controllers\SystemController;
 use App\Controllers\UserController;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -28,6 +29,10 @@ return function (App $app) use ($tokenMiddleware) {
             $group->put('/{id}', UserController::class . ':editUser');
             $group->delete('/{id}', UserController::class . ':deleteUser');
             $group->get('/users', UserController::class . ':getUsers');
+        })->add($tokenMiddleware);
+
+        $routes->group('/movie', function (RouteCollectorProxy $group) {
+            $group->get('/trendings', MovieController::class . ':getTrendings');
         })->add($tokenMiddleware);
 
         $routes->post('/table', SystemController::class . ':addSQLTableIfNotExist');
