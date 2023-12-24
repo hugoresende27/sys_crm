@@ -68,13 +68,13 @@ class UserRepository
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user && password_verify($password, $user['password'])) {
-            $verifyToken = $this->tokenMiddleware->isValidToken($user['token']);
-            if(!$verifyToken['status']){
+            // $verifyToken = $this->tokenMiddleware->isValidToken($user['token']);
+            // if(!$verifyToken['status']){
                 $newToken = $this->tokenMiddleware->generateToken($user);
                 $user['token'] = $newToken;
                 $this->updateUserToken($user['id'], $user);
-            }
-            return ['success' => true, 'message' => 'Login successful', 'user' => $user, 'token' => $verifyToken];
+            // }
+            return ['success' => true, 'message' => 'Login successful', 'user' => $user, 'token' => $user['token'] ];
         } else {
             return ['success' => false, 'message' => 'Invalid credentials'];
         }

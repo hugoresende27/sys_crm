@@ -28,6 +28,11 @@ class MovieController
         $data = $this->movieAPI->trendings();
         return JsonResponse::withJson($response, $data);
     }
+    public function getPopularity(Request $request, Response $response): Response
+    {
+        $data = $this->movieAPI->popularity();
+        return JsonResponse::withJson($response, $data);
+    }
 
     
 

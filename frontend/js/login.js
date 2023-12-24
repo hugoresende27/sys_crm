@@ -44,7 +44,7 @@ const app = Vue.createApp({
                       path: '/',
                     });
                    
-                    Cookies.set(`token_expires_${this.username}`, response.data.created_at, {
+                    Cookies.set(`token_expires_${this.username}`, response.data.expires_at, {
                       expires: new Date(response.data.expires_at),
                       path: '/',
                     });
