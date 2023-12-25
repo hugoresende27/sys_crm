@@ -98,11 +98,18 @@
                     <div class="col-12">
                         <nav class="navbar navbar-expand-xl navbar-light bg-light">
                             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                                <button type="button" class="btn btn-light">Comedy</button>
-                                <button type="button" class="btn btn-light">Horror</button>
-                                <button type="button" class="btn btn-light">Sci-Fi</button>
-                                <button type="button" class="btn btn-light">Documentaries</button>
-                                <button type="button" class="btn btn-light">Light</button>
+                                <button class="btn btn-light" @click="getMoviesByGenre(28)">Action</button>
+                                <button class="btn btn-light" @click="getMoviesByGenre(12)">Adventure</button>
+                                <button class="btn btn-light" @click="getMoviesByGenre(35)">Comedy</button>
+                                <button class="btn btn-light" @click="getMoviesByGenre(80)">Crime</button>
+                                <button class="btn btn-light" @click="getMoviesByGenre(27)">Horror</button>
+                                <button class="btn btn-light" @click="getMoviesByGenre(9648)">Mystery</button>
+                                <button class="btn btn-light" @click="getMoviesByGenre(878)">Sci-Fi</button>
+                                <button class="btn btn-light" @click="getMoviesByGenre(53)">Thriller</button>
+                                <button class="btn btn-light" @click="getMoviesByGenre(10752)">War</button>
+                                <button class="btn btn-light" @click="getMoviesByGenre(14)">Fantasy</button>
+                                <button class="btn btn-light" @click="nowPlaying">Now Playing</button>
+
                             </div>
                         </nav>
                     </div>

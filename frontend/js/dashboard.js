@@ -31,7 +31,7 @@ const app = Vue.createApp({
                 const response = await axios.request(config);
                 this.usersData = response.data;
             } catch (error) {
-                window.location.href = 'index.html';
+                window.location.href = '/';
             }
 
         
@@ -148,9 +148,6 @@ const app = Vue.createApp({
         async getMovies() {
             this.setActivePage('movies');
 
-         
-
-
             try {
                 let config = {
                     method: 'get',
@@ -171,7 +168,48 @@ const app = Vue.createApp({
                 });
                 // console.log(this.moviesData)
             } catch (error) {
-                window.location.href = 'index.html';
+                window.location.href = '/';
+            }
+        },
+
+        async getMoviesByGenre(genreId) {
+            // this.setActivePage('movies');
+            try {
+                let config = {
+                    method: 'get',
+                    maxBodyLength: Infinity,
+                    url: 'http://localhost:8085/api/v1/movie/genre?genre_id=' + genreId,
+                    headers: {
+                        'Authorization': this.token
+                    }
+                };
+
+                const response = await axios.request(config);
+                console.log(response);
+                this.moviesData = response.data;
+            } catch (error) {
+                console.log(error)
+                window.location.href = '/';
+            }
+        },
+
+        async nowPlaying() {
+
+            try {
+                let config = {
+                    method: 'get',
+                    maxBodyLength: Infinity,
+                    url: 'http://localhost:8085/api/v1/movie/playing',
+                    headers: {
+                        'Authorization': this.token
+                    }
+                };
+
+                const response = await axios.request(config);
+                this.moviesData = response.data;
+            } catch (error) {
+                console.log(error)
+                window.location.href = '/';
             }
         },
 

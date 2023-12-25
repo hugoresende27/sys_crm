@@ -29,16 +29,33 @@ class TheMovieDbAPI
             $headers = [
                 'Authorization' => 'Bearer '.$this->token
             ];
-            $request = new Request('GET', $this->apiURL.'/trending/movie/day?language='.$this->apiLanguage, $headers);
+            $request = new Request('GET', $this->apiURL.'/trending/movie/day?language='.$this->apiLanguage.'&include_adult=false', $headers);
             $response = $client->send($request);
             $body = $response->getBody()->getContents();
             $data = json_decode($body, true);
-            foreach($data['results'] as $key => $movie) {
-                $data['results'][$key]['backdrop_path'] = $this->generateImageURL($this->imageURL, $movie['backdrop_path']);
-                $data['results'][$key]['poster_path'] = $this->generateImageURL($this->imageURL, $movie['poster_path']);   
-                $genres = $this->getGenreNames($movie['genre_ids'] );
-                $data['results'][$key]['genre_ids'] = $genres;
-            }
+            return $this->transformResponse($data['results']);
+
+            
+        } catch (Exception $e) {
+            // dd($e);
+            $data = (array) $e;
+        }
+
+        return $data;
+     
+    }
+    public function nowPlaying(): array
+    {
+        try{
+            $client = new Client();
+            $headers = [
+                'Authorization' => 'Bearer '.$this->token
+            ];
+            $request = new Request('GET', $this->apiURL.'/movie/now_playing?language='.$this->apiLanguage.'&sort_by='.$this->sortBy.'&include_adult=false', $headers);
+            $response = $client->send($request);
+            $body = $response->getBody()->getContents();
+            $data = json_decode($body, true);
+            return $this->transformResponse($data['results']);
 
             
         } catch (Exception $e) {
@@ -121,11 +138,33 @@ class TheMovieDbAPI
                 'Authorization' => 'Bearer '.$this->token
             ];
             $request = new Request('GET', $this->apiURL.
-            '/discover/movie?with_genres='.$genreId.'&language='.$this->apiLanguage.'&page=1&sort_by='.$this->sortBy, $headers);
+            '/discover/movie?with_genres='.$genreId.'&language='.$this->apiLanguage.'&page=1&sort_by='.$this->sortBy.'&include_adult=false', $headers);
             $response = $client->send($request);
             $body = $response->getBody()->getContents();
             $data = json_decode($body, true);
             return $this->transformResponse($data['results']);
+
+            
+        } catch (Exception $e) {
+            // dd($e);
+            $data = (array) $e;
+        }
+
+        return $data;
+    }
+    public function search(?string $keyword): array
+    {
+        try{
+            $client = new Client();
+            $headers = [
+                'Authorization' => 'Bearer '.$this->token
+            ];
+            $request = new Request('GET', $this->apiURL.
+            '/search/keyword?query='.$keyword ?? '', $headers);
+            $response = $client->send($request);
+            $body = $response->getBody()->getContents();
+            $data = json_decode($body, true);
+            return $data;
 
             
         } catch (Exception $e) {

@@ -35,6 +35,8 @@ return function (App $app) use ($tokenMiddleware) {
             $group->get('/trendings', MovieController::class . ':getTrendings');
             $group->get('/popularity', MovieController::class . ':getPopularity');
             $group->get('/genre', MovieController::class . ':getByGenre');
+            $group->get('/search', MovieController::class . ':search');
+            $group->get('/playing', MovieController::class . ':nowPlaying');
         })->add($tokenMiddleware);
 
         $routes->post('/table', SystemController::class . ':addSQLTableIfNotExist');

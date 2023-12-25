@@ -33,10 +33,21 @@ class MovieController
         $data = $this->movieAPI->popularity();
         return JsonResponse::withJson($response, $data);
     }
+    public function nowPlaying(Request $request, Response $response): Response
+    {
+        $data = $this->movieAPI->nowPlaying();
+        return JsonResponse::withJson($response, $data);
+    }
     public function getByGenre(Request $request, Response $response): Response
     {
         $queryParams = $request->getQueryParams();
         $data = $this->movieAPI->byGenre($queryParams['genre_id'] ?? null);
+        return JsonResponse::withJson($response, $data);
+    }
+    public function search(Request $request, Response $response): Response
+    {
+        $queryParams = $request->getQueryParams();
+        $data = $this->movieAPI->search($queryParams['keyword'] ?? null);
         return JsonResponse::withJson($response, $data);
     }
 
