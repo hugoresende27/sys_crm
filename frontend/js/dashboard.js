@@ -239,28 +239,30 @@ const app = Vue.createApp({
             window.location.href = 'index.html';
         },
 
-        movieOverview(overview) {
-            if(!alertify.myAlert){
-                //define a new dialog
-                alertify.dialog('myAlert',function(){
-                  return{
-                    main:function(message){
-                      this.message = message;
-                    },
-                    setup:function(){
-                        return { 
-                          buttons:[{text: overview, key:27/*Esc*/}],
-                          focus: { element:0 }
-                        };
-                    },
-                    prepare:function(){
-                      this.setContent(this.message);
-                    }
-                }});
-              }
-              //launch it.
-              alertify.myAlert("Movie Overview");
-              overview = '';
+        movieOverview(overview, title) {
+            if (!alertify.myAlert) {
+                // Define a new dialog
+                alertify.dialog('myAlert', function () {
+                    return {
+                        main: function (message, title) {
+                            this.message = message;
+                            this.title = title;
+                        },
+                        setup: function () {
+                            return {
+                                buttons: [{ text: "OK", key: 27 /*Esc*/ }],
+                                focus: { element: 0 }
+                            };
+                        },
+                        prepare: function () {
+                            this.setContent(this.message);
+                            this.setHeader(this.title); // Set the title
+                        }
+                    };
+                });
+            }
+            // Launch it with both the overview and title
+            alertify.myAlert(overview, title);
         }
     },
     created() {

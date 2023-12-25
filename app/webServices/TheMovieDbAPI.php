@@ -12,12 +12,14 @@ class TheMovieDbAPI
     private string $imageURL;
     private string $apiURL;
     private string $apiLanguage;
+    private string $sortBy;
     public function __construct()
     {
         $this->token = $_ENV['MOVIE_API_TOKEN'];
         $this->imageURL = 'https://image.tmdb.org/t/p/';
         $this->apiURL = 'https://api.themoviedb.org/3';
         $this->apiLanguage = 'pt-PT';
+        $this->sortBy = 'revenue.desc';
     }
 
     public function trendings(): array
@@ -57,7 +59,8 @@ class TheMovieDbAPI
             ];
     
             $genreIdsString = implode(',', $genreIds);
-            $request = new Request('GET', $this->apiURL."/genre/movie/list?language=".$this->apiLanguage, $headers);
+            $request = new Request('GET', $this->apiURL."/genre/movie/list?language=".
+            $this->apiLanguage, $headers);
     
             $response = $client->send($request);
 
@@ -95,16 +98,12 @@ class TheMovieDbAPI
                 'Authorization' => 'Bearer '.$this->token
             ];
             $request = new Request('GET', $this->apiURL.
-            '/discover/movie?include_adult=false&include_video=false&without_genres=10402&language='.$this->apiLanguage.'&page=1&sort_by=popularity.desc', $headers);
+            '/discover/movie?include_adult=false&include_video=false&without_genres=10402&language='
+            .$this->apiLanguage.'&page=1&sort_by='.$this->sortBy, $headers);
             $response = $client->send($request);
             $body = $response->getBody()->getContents();
             $data = json_decode($body, true);
-            foreach($data['results'] as $key => $movie) {
-                $data['results'][$key]['backdrop_path'] = $this->generateImageURL($this->imageURL, $movie['backdrop_path']);
-                $data['results'][$key]['poster_path'] = $this->generateImageURL($this->imageURL, $movie['poster_path']);   
-                $genres = $this->getGenreNames($movie['genre_ids'] );
-                $data['results'][$key]['genre_ids'] = $genres;
-            }
+            return $this->transformResponse($data['results']);
 
             
         } catch (Exception $e) {
@@ -113,5 +112,40 @@ class TheMovieDbAPI
         }
 
         return $data;
+    }
+    public function byGenre(?int $genreId): array
+    {
+        try{
+            $client = new Client();
+            $headers = [
+                'Authorization' => 'Bearer '.$this->token
+            ];
+            $request = new Request('GET', $this->apiURL.
+            '/discover/movie?with_genres='.$genreId.'&language='.$this->apiLanguage.'&page=1&sort_by='.$this->sortBy, $headers);
+            $response = $client->send($request);
+            $body = $response->getBody()->getContents();
+            $data = json_decode($body, true);
+            return $this->transformResponse($data['results']);
+
+            
+        } catch (Exception $e) {
+            // dd($e);
+            $data = (array) $e;
+        }
+
+        return $data;
+    }
+
+
+    private function transformResponse(array $results): array
+    {
+        foreach ($results as $key => $movie) {
+            $results[$key]['backdrop_path'] = $this->generateImageURL($this->imageURL, $movie['backdrop_path']);
+            $results[$key]['poster_path'] = $this->generateImageURL($this->imageURL, $movie['poster_path']);
+            $genres = $this->getGenreNames($movie['genre_ids']);
+            $results[$key]['genre_ids'] = $genres;
+        }
+
+        return $results;
     }
 }

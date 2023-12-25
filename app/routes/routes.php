@@ -34,6 +34,7 @@ return function (App $app) use ($tokenMiddleware) {
         $routes->group('/movie', function (RouteCollectorProxy $group) {
             $group->get('/trendings', MovieController::class . ':getTrendings');
             $group->get('/popularity', MovieController::class . ':getPopularity');
+            $group->get('/genre', MovieController::class . ':getByGenre');
         })->add($tokenMiddleware);
 
         $routes->post('/table', SystemController::class . ':addSQLTableIfNotExist');

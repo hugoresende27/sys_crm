@@ -61,6 +61,7 @@
                                     <li class="nav-item">
                                         <p class="nav-link my-btn" :class="{ active: activePage === 'movies' }" @click="getMovies">Movies</p>
                                     </li>
+                           
                                     <li class="nav-item dropdown">
                                         <p class="nav-link dropdown-toggle my-btn" @click="getSettings" :class="{ active: activePage === 'settings' }" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
                                             aria-expanded="false">
@@ -90,6 +91,20 @@
                            
                         </nav>
                        
+                    </div>
+                </div>
+
+                <div class="row text-center" v-if="activePage == 'movies'">
+                    <div class="col-12">
+                        <nav class="navbar navbar-expand-xl navbar-light bg-light">
+                            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                                <button type="button" class="btn btn-light">Comedy</button>
+                                <button type="button" class="btn btn-light">Horror</button>
+                                <button type="button" class="btn btn-light">Sci-Fi</button>
+                                <button type="button" class="btn btn-light">Documentaries</button>
+                                <button type="button" class="btn btn-light">Light</button>
+                            </div>
+                        </nav>
                     </div>
                 </div>
                 
@@ -231,8 +246,8 @@
                                     <div class="card-body">
                                         <h5 class="card-title">{{ movie.title }}</h5>
                                   
-                                        <button @click="movieOverview(movie.overview)">Overview</button>
-                                        
+                                        <button class="btn btn-info" @click="movieOverview(movie.overview, movie.title)">Overview</button>
+
                                         <div class="d-flex justify-content-between align-items-center">
                                             <small class="text-muted">{{ movie.release_date }}</small>
                                             <span class="badge badge-info">{{ movie.popularity }}</span>
