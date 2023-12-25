@@ -151,7 +151,7 @@ const app = Vue.createApp({
          
 
 
-            // try {
+            try {
                 let config = {
                     method: 'get',
                     maxBodyLength: Infinity,
@@ -170,9 +170,9 @@ const app = Vue.createApp({
                     };
                 });
                 // console.log(this.moviesData)
-            // } catch (error) {
-            //     // window.location.href = 'index.html';
-            // }
+            } catch (error) {
+                window.location.href = 'index.html';
+            }
         },
 
 
@@ -229,15 +229,6 @@ const app = Vue.createApp({
             }
         },
 
-        shouldShowViewMore(overview) {
-            // Check if the overview text needs to be truncated
-            return overview.split('\n').length > 3;
-        },
-    
-        toggleOverview(movie) {
-            // Toggle between showing full overview and truncated overview
-            movie.showFullOverview = !movie.showFullOverview;
-        },
 
         logout() {
             Cookies.remove(`token_${this.username}`);
@@ -247,6 +238,30 @@ const app = Vue.createApp({
             Cookies.remove('username');
             window.location.href = 'index.html';
         },
+
+        movieOverview(overview) {
+            if(!alertify.myAlert){
+                //define a new dialog
+                alertify.dialog('myAlert',function(){
+                  return{
+                    main:function(message){
+                      this.message = message;
+                    },
+                    setup:function(){
+                        return { 
+                          buttons:[{text: overview, key:27/*Esc*/}],
+                          focus: { element:0 }
+                        };
+                    },
+                    prepare:function(){
+                      this.setContent(this.message);
+                    }
+                }});
+              }
+              //launch it.
+              alertify.myAlert("Movie Overview");
+              overview = '';
+        }
     },
     created() {
         this.user_id = Cookies.get(`user_id`);
